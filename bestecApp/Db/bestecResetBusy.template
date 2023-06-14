@@ -1,0 +1,32 @@
+record(longout, "$(P)Set$(R)Busy")
+{
+    field(DOL,  "1")
+    field(OMSL, "closed_loop")
+    field(OUT, "$(P)$(R)Busy PP")
+}
+
+record(busy, "$(P)$(R)Busy")
+{
+   field(ZNAM, "Done")
+   field(ZSV,  "NO_ALARM")
+   field(ONAM, "Changing")
+   field(OSV,  "MINOR")
+}
+
+record(bi, "$(P)$(R)BusyCB")
+{
+   field(DTYP, "asynInt32")
+   field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BESTEC_$(R)_BUSY")
+   field(ZNAM, "Done")
+   field(ZSV,  "NO_ALARM")
+   field(ONAM, "Changing")
+   field(OSV,  "MINOR")
+   field(SCAN, "I/O Intr")
+}
+
+record(calcout, "$(P)Clear$(R)Busy") {
+    field(INPA, "$(P)$(R)BusyCB CP")
+    field(CALC, "A")
+    field(OOPT, "Transition To Zero")
+    field(OUT,  "$(P)$(R)Busy PP")
+}

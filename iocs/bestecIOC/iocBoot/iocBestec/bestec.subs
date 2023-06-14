@@ -1,0 +1,22 @@
+file "$(MOTOR)/db/asyn_motor.db" {
+pattern
+{ P     M   PORT  ADDR  DESC         DTYP       EGU DIR DHLM DLLM MRES   PREC VBAS VELO ACCL BVEL BACC BDST  INIT }
+{ XW:   MR  BS    0     "Mir. ROX"   asynMotor  deg Pos 0    0    0.001  3    0.1  1.0  0.2  0.5  0.2  0.001 ""   }
+{ XW:   GR  BS    1     "Gr. ROX"    asynMotor  deg Pos 0    0    0.001  3    0.1  1.0  0.2  0.5  0.2  0.001 ""   }
+{ XW:   MT  BS    2     "Mir. TRX"   asynMotor  mm  Pos 0    0    0.001  3    0.1  1.0  0.2  0.5  0.2  0.001 ""   }
+{ XW:   GT  BS    3     "Gr. TRX"    asynMotor  mm  Pos 0    0    0.001  3    0.1  1.0  0.2  0.5  0.2  0.001 ""   }
+}
+
+file "$(BESTEC)/db/bestecMono.template" {{
+    P    = XW:
+    PORT = BS
+}}
+
+file "$(BESTEC)/db/bestecResetBusy.template" {
+pattern
+{ P     R       PORT}
+{ XW:   Energy  BS  }
+{ XW:   Grating BS  }
+{ XW:   MTPos   BS  }
+}
+

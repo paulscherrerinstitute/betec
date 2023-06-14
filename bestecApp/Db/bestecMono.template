@@ -1,0 +1,169 @@
+record(bo, "$(P)Stop")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_STOP")
+}
+
+record(mbbi, "$(P)State")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_STATE")
+    field(ZRST, "Idle")
+    field(ONST, "Busy")
+    field(TWST, "Block")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbi, "$(P)MotionState")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_MOTION_ERROR")
+    field(ZRST, "OK")
+    field(ZRSV, "NO_ALARM")
+    field(ONST, "Enc. high")
+    field(ONSV, "MAJOR")
+    field(TWST, "Enc. low")
+    field(TWSV, "MAJOR")
+    field(THST, "No Enc.")
+    field(THSV, "MAJOR")
+    field(FRST, "Enc. error")
+    field(FRSV, "MAJOR")
+    field(FVST, "Lim. high")
+    field(FVSV, "MAJOR")
+    field(SXST, "Lim. low")
+    field(SXSV, "MAJOR")
+    field(SVST, "Following error")
+    field(SVSV, "MAJOR")
+    field(EIST, "EtherCAT error")
+    field(EISV, "MAJOR")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)Energy")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_Energy")
+    field(PREC, "3")
+    field(EGU,  "eV")
+    field(FLNK, "$(P)SetEnergyBusy")
+}
+
+record(ai, "$(P)Energy_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_Energy")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+    field(EGU,  "eV")
+}
+
+record(mbbo, "$(P)Grating")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_Grating")
+    field(ZRST, "Gr. 1")
+    field(ZRVL, "1")
+    field(ONST, "Gr. 2")
+    field(ONVL, "2")
+    field(TWST, "Gr. 3")
+    field(TWVL, "3")
+    field(THST, "Gr. 4")
+    field(THVL, "4")
+    field(FLNK, "$(P)SetGratingBusy")
+}
+
+record(mbbi, "$(P)Grating_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_Grating")
+    field(ZRST, "Gr. 1")
+    field(ZRVL, "1")
+    field(ONST, "Gr. 2")
+    field(ONVL, "2")
+    field(TWST, "Gr. 3")
+    field(TWVL, "3")
+    field(THST, "Gr. 4")
+    field(THVL, "4")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)MTPos")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_MTPos")
+    field(PREC, "3")
+    field(EGU,  "mm")
+    field(FLNK, "$(P)SetMTPosBusy")
+}
+
+record(ai, "$(P)MTPos_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_MTPos")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+    field(EGU,  "mm")
+}
+
+record(ao, "$(P)LineDensity")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_LINEDENSITY")
+    field(PREC, "2")
+    field(EGU,  "lines/mm")
+}
+
+record(ai, "$(P)LineDensity_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_LINEDENSITY")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
+    field(EGU,  "lines/mm")
+}
+
+record(mbbo, "$(P)DiffOrder")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_DIFFORDER")
+    field(ZRST, "1st")
+    field(ZRVL, "1")
+    field(ONST, "2nd")
+    field(ONVL, "2")
+    field(TWST, "3rd")
+    field(TWVL, "3")
+}
+
+record(mbbi, "$(P)DiffOrder_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_DIFFORDER")
+    field(SCAN, "I/O Intr")
+    field(ZRST, "1st")
+    field(ZRVL, "1")
+    field(ONST, "2nd")
+    field(ONVL, "2")
+    field(TWST, "3rd")
+    field(TWVL, "3")
+}
+
+record(ao, "$(P)Cff")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_CFF")
+    field(PREC, "2")
+}
+
+record(ai, "$(P)Cff_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_CFF")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
+}
+
+record(asyn, "$(P)AsynIO")
+{
+    field(PORT, "$(PORT)")
+    field(ADDR, "$(ADDR=0)")
+}

@@ -1,0 +1,1008 @@
+
+file {
+	name="/afs/psi.ch/group/8215/wang/epics_driver_modules/bestec/bestecApp/op/adl/bestecMono.adl"
+	version=030115
+}
+display {
+	object {
+		x=428
+		y=177
+		width=500
+		height=450
+	}
+	clr=7
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=1
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		00fdbc,
+		09c0a1,
+		0090cd,
+		00a0bd,
+		0080a1,
+		00a5a0,
+		00b0a2,
+		00b0b2,
+		00dea1,
+		00fda1,
+	}
+}
+rectangle {
+	object {
+		x=181
+		y=233
+		width=74
+		height=24
+	}
+	"basic attribute" {
+		clr=15
+		fill="outline"
+		width=4
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)GratingBusy"
+	}
+}
+rectangle {
+	object {
+		x=181
+		y=203
+		width=74
+		height=24
+	}
+	"basic attribute" {
+		clr=15
+		fill="outline"
+		width=4
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)MTPosBusy"
+	}
+}
+rectangle {
+	object {
+		x=50
+		y=135
+		width=104
+		height=24
+	}
+	"basic attribute" {
+		clr=15
+		fill="outline"
+		width=4
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)EnergyBusy"
+	}
+}
+composite {
+	object {
+		x=160
+		y=374
+		width=35
+		height=16
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=160
+				y=374
+				width=35
+				height=16
+			}
+			"basic attribute" {
+				clr=14
+				width=2
+			}
+			"dynamic attribute" {
+				vis="if not zero"
+				chan="$(P)MR_able.VAL"
+			}
+		}
+		rectangle {
+			object {
+				x=160
+				y=374
+				width=35
+				height=16
+			}
+			"basic attribute" {
+				clr=20
+				style="dash"
+				fill="outline"
+				width=2
+			}
+			"dynamic attribute" {
+				vis="if not zero"
+				chan="$(P)MR_able.VAL"
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=160
+		y=419
+		width=35
+		height=16
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=160
+				y=419
+				width=35
+				height=16
+			}
+			"basic attribute" {
+				clr=14
+				width=2
+			}
+			"dynamic attribute" {
+				vis="if not zero"
+				chan="$(P)GR_able.VAL"
+			}
+		}
+		rectangle {
+			object {
+				x=160
+				y=419
+				width=35
+				height=16
+			}
+			"basic attribute" {
+				clr=20
+				style="dash"
+				fill="outline"
+				width=2
+			}
+			"dynamic attribute" {
+				vis="if not zero"
+				chan="$(P)GR_able.VAL"
+			}
+		}
+	}
+}
+text {
+	object {
+		x=18
+		y=265
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Diff. order"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=183
+		y=265
+		width=70
+		height=20
+	}
+	control {
+		chan="$(P)DiffOrder"
+		clr=14
+		bclr=51
+	}
+}
+"message button" {
+	object {
+		x=385
+		y=15
+		width=100
+		height=30
+	}
+	control {
+		chan="$(P)Stop"
+		clr=30
+		bclr=20
+	}
+	label="HALT"
+	press_msg="1"
+}
+text {
+	object {
+		x=10
+		y=374
+		width=80
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mirror"
+}
+text {
+	object {
+		x=10
+		y=414
+		width=80
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Grating"
+}
+rectangle {
+	object {
+		x=164
+		y=377
+		width=7
+		height=10
+	}
+	"basic attribute" {
+		clr=20
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)MR.LLS"
+	}
+}
+rectangle {
+	object {
+		x=185
+		y=377
+		width=7
+		height=10
+	}
+	"basic attribute" {
+		clr=20
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)MR.HLS"
+	}
+}
+rectangle {
+	object {
+		x=170
+		y=377
+		width=15
+		height=8
+	}
+	"basic attribute" {
+		clr=55
+		width=2
+	}
+	"dynamic attribute" {
+		vis="if zero"
+		chan="$(P)MR.DMOV"
+	}
+}
+rectangle {
+	object {
+		x=170
+		y=379
+		width=15
+		height=8
+	}
+	"basic attribute" {
+		clr=30
+		width=2
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)MR.LVIO"
+	}
+}
+rectangle {
+	object {
+		x=164
+		y=422
+		width=7
+		height=10
+	}
+	"basic attribute" {
+		clr=20
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)GR.LLS"
+	}
+}
+rectangle {
+	object {
+		x=185
+		y=422
+		width=7
+		height=10
+	}
+	"basic attribute" {
+		clr=20
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)GR.HLS"
+	}
+}
+rectangle {
+	object {
+		x=170
+		y=422
+		width=15
+		height=8
+	}
+	"basic attribute" {
+		clr=55
+		width=2
+	}
+	"dynamic attribute" {
+		vis="if zero"
+		chan="$(P)GR.DMOV"
+	}
+}
+rectangle {
+	object {
+		x=170
+		y=424
+		width=15
+		height=8
+	}
+	"basic attribute" {
+		clr=30
+		width=2
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)GR.LVIO"
+	}
+}
+"text update" {
+	object {
+		x=195
+		y=170
+		width=60
+		height=20
+	}
+	monitor {
+		chan="$(P)Cff_RBV"
+		clr=14
+		bclr=6
+	}
+	align="horiz. centered"
+}
+text {
+	object {
+		x=18
+		y=234
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Grating"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=183
+		y=235
+		width=70
+		height=20
+	}
+	control {
+		chan="$(P)Grating"
+		clr=14
+		bclr=51
+	}
+}
+"related display" {
+	object {
+		x=350
+		y=424
+		width=100
+		height=22
+	}
+	display[0] {
+		label="motors"
+		name="topMotors4.adl"
+		args="P=$(P),M1=MR,M2=GR,M3=MT,M4=GT"
+	}
+	clr=14
+	bclr=51
+	label=" motors"
+}
+"text update" {
+	object {
+		x=52
+		y=170
+		width=100
+		height=20
+	}
+	monitor {
+		chan="$(P)Energy_RBV"
+		clr=14
+		bclr=6
+	}
+}
+text {
+	object {
+		x=85
+		y=10
+		width=250
+		height=25
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="BESTEC Monochromator"
+	align="horiz. centered"
+}
+text {
+	object {
+		x=52
+		y=112
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	"dynamic attribute" {
+		chan="$(P)Cff"
+	}
+	textix="Energy [eV]"
+	align="horiz. centered"
+}
+"text entry" {
+	object {
+		x=52
+		y=137
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)Energy"
+		clr=14
+		bclr=51
+	}
+}
+text {
+	object {
+		x=195
+		y=111
+		width=57
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	"dynamic attribute" {
+		chan="$(P)Cff"
+	}
+	textix="cff"
+	align="horiz. centered"
+}
+"text entry" {
+	object {
+		x=193
+		y=137
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)Cff"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=264
+		y=234
+		width=60
+		height=20
+	}
+	monitor {
+		chan="$(P)Grating_RBV"
+		clr=14
+		bclr=6
+	}
+	align="horiz. centered"
+}
+"text update" {
+	object {
+		x=264
+		y=265
+		width=60
+		height=20
+	}
+	monitor {
+		chan="$(P)DiffOrder_RBV"
+		clr=14
+		bclr=6
+	}
+	align="horiz. centered"
+}
+text {
+	object {
+		x=105
+		y=344
+		width=100
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Rot. (deg)"
+}
+text {
+	object {
+		x=220
+		y=344
+		width=100
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Trans. (mm)"
+}
+"text update" {
+	object {
+		x=90
+		y=369
+		width=60
+		height=20
+	}
+	monitor {
+		chan="$(P)MR.RBV"
+		clr=14
+		bclr=6
+	}
+	align="horiz. centered"
+}
+"text update" {
+	object {
+		x=90
+		y=414
+		width=60
+		height=20
+	}
+	monitor {
+		chan="$(P)GR.RBV"
+		clr=14
+		bclr=6
+	}
+	align="horiz. centered"
+}
+composite {
+	object {
+		x=295
+		y=372
+		width=35
+		height=16
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=295
+				y=372
+				width=35
+				height=16
+			}
+			"basic attribute" {
+				clr=14
+				width=2
+			}
+			"dynamic attribute" {
+				vis="if not zero"
+				chan="$(P)MT_able.VAL"
+			}
+		}
+		rectangle {
+			object {
+				x=295
+				y=372
+				width=35
+				height=16
+			}
+			"basic attribute" {
+				clr=20
+				style="dash"
+				fill="outline"
+				width=2
+			}
+			"dynamic attribute" {
+				vis="if not zero"
+				chan="$(P)MT_able.VAL"
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=295
+		y=419
+		width=35
+		height=16
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=295
+				y=419
+				width=35
+				height=16
+			}
+			"basic attribute" {
+				clr=14
+				width=2
+			}
+			"dynamic attribute" {
+				vis="if not zero"
+				chan="$(P)GT_able.VAL"
+			}
+		}
+		rectangle {
+			object {
+				x=295
+				y=419
+				width=35
+				height=16
+			}
+			"basic attribute" {
+				clr=20
+				style="dash"
+				fill="outline"
+				width=2
+			}
+			"dynamic attribute" {
+				vis="if not zero"
+				chan="$(P)GT_able.VAL"
+			}
+		}
+	}
+}
+rectangle {
+	object {
+		x=299
+		y=375
+		width=7
+		height=10
+	}
+	"basic attribute" {
+		clr=20
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)MT.LLS"
+	}
+}
+rectangle {
+	object {
+		x=320
+		y=375
+		width=7
+		height=10
+	}
+	"basic attribute" {
+		clr=20
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)MT.HLS"
+	}
+}
+rectangle {
+	object {
+		x=305
+		y=375
+		width=15
+		height=8
+	}
+	"basic attribute" {
+		clr=55
+		width=2
+	}
+	"dynamic attribute" {
+		vis="if zero"
+		chan="$(P)MT.DMOV"
+	}
+}
+rectangle {
+	object {
+		x=305
+		y=377
+		width=15
+		height=8
+	}
+	"basic attribute" {
+		clr=30
+		width=2
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)MT.LVIO"
+	}
+}
+rectangle {
+	object {
+		x=299
+		y=422
+		width=7
+		height=10
+	}
+	"basic attribute" {
+		clr=20
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)GT.LLS"
+	}
+}
+rectangle {
+	object {
+		x=320
+		y=422
+		width=7
+		height=10
+	}
+	"basic attribute" {
+		clr=20
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)GT.HLS"
+	}
+}
+rectangle {
+	object {
+		x=305
+		y=422
+		width=15
+		height=8
+	}
+	"basic attribute" {
+		clr=55
+		width=2
+	}
+	"dynamic attribute" {
+		vis="if zero"
+		chan="$(P)GT.DMOV"
+	}
+}
+rectangle {
+	object {
+		x=305
+		y=424
+		width=15
+		height=8
+	}
+	"basic attribute" {
+		clr=30
+		width=2
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)GT.LVIO"
+	}
+}
+"text update" {
+	object {
+		x=225
+		y=369
+		width=60
+		height=20
+	}
+	monitor {
+		chan="$(P)MT.RBV"
+		clr=14
+		bclr=6
+	}
+	align="horiz. centered"
+}
+"text update" {
+	object {
+		x=225
+		y=414
+		width=60
+		height=20
+	}
+	monitor {
+		chan="$(P)GT.RBV"
+		clr=14
+		bclr=6
+	}
+	align="horiz. centered"
+}
+text {
+	object {
+		x=18
+		y=205
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mirror"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=264
+		y=205
+		width=60
+		height=20
+	}
+	monitor {
+		chan="$(P)MTPos_RBV"
+		clr=14
+		bclr=6
+	}
+	align="horiz. centered"
+}
+"text entry" {
+	object {
+		x=183
+		y=205
+		width=70
+		height=20
+	}
+	control {
+		chan="$(P)MTPos"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=300
+		y=72
+		width=100
+		height=20
+	}
+	monitor {
+		chan="$(P)MotionState"
+		clr=44
+		bclr=6
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+}
+"text entry" {
+	object {
+		x=183
+		y=295
+		width=70
+		height=20
+	}
+	control {
+		chan="$(P)LineDensity"
+		clr=14
+		bclr=51
+	}
+}
+text {
+	object {
+		x=18
+		y=295
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Line desnsity"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=264
+		y=295
+		width=60
+		height=20
+	}
+	monitor {
+		chan="$(P)LineDensity_RBV"
+		clr=14
+		bclr=6
+	}
+	align="horiz. centered"
+}
+rectangle {
+	object {
+		x=420
+		y=75
+		width=20
+		height=15
+	}
+	"basic attribute" {
+		clr=15
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)State"
+	}
+}
+text {
+	object {
+		x=25
+		y=40
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=20
+	}
+	"dynamic attribute" {
+		vis="if zero"
+		chan="$(P)AsynIO.CNCT"
+	}
+	textix="Disconnected"
+	align="horiz. centered"
+}
