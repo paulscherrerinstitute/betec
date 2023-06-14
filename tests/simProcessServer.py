@@ -208,7 +208,7 @@ class ClientThread(threading.Thread):
             except:
                 break
             if not line:
-                continue
+                break
 
             parts = line.split(':')
             if len(parts) == 2:
