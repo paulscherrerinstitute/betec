@@ -361,6 +361,7 @@ void bestecController::handleNotification(const char input[], int buflen)
     else if (sscanf(input, "GRATINGNR:%d", &grating) == 1) {
         setIntegerParam(BestecGrating, grating);
         setIntegerParam(BestecGratingBusy, 0);
+        getGratingParameters();
     } else {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "bestecController:%s: Unknown notification `%s`\n",
