@@ -69,12 +69,15 @@ class Axis(object):
     def notify(self, message):
         for callback in self.callbacks:
             callback(message)
-    
+
+    def getPosition(self):
+        return self.position + random.random()/1000.
+
     def getState(self):
         return '%d %d %f %d %d %d %d %d %d' % (
                 self.number+1,
                 self.steps + int(random.random() * 10),
-                self.position + random.random()/1000.,
+                self.getPosition(),
                 self.moving,
                 self.low_limit,
                 self.high_limit,
@@ -87,11 +90,11 @@ class Mono(object):
         self.energy = 100
         self.mirror = 0
         self.grating = 1
-        self.grating_list = [-10, -5, 0, 5]
+        self.grating_list = [(-10,800), (-5,1000), (0,1500), (5,2400)]
         self.monoState = 0
-        self.lineDensity = 1200.0
+        self.lineDensity = 800.0
         self.diffOrder = 1
-        self.cff = 2.25
+        self.cff = 2.15
         self.globalMotion = 0
         self.globalStabilization = 0
         self.globalLimitEncoderError = 0
@@ -99,7 +102,7 @@ class Mono(object):
         self.globalMotionErrorDesc = 0
 
     def getPose(self):
-        energy = random.random() / 1000
+        energy = self.getEnergy(axes[1].getPosition(), axes[0].getPosition())
         return '%f %f %d %f %d' % (
                 1239.8 / energy,
                 energy,
@@ -114,6 +117,25 @@ class Mono(object):
                 self.globalLimitEncoderError,
                 self.globalMotionError,
                 self.globalMotionErrorDesc)
+
+    def setEnergy(self, energy):
+        la = 2.9979e8 / (energy * 1.602176634) * 6.6261e-15
+        lq = self.lineDensity * 1e3 * self.diffOrder * la
+        B = lq * self.cff / (1 - self.cff**2)
+        cosa = B/self.cff + math.sqrt(B**2 + 1)
+        cosb = B*self.cff + math.sqrt(B**2 + 1)
+        alpha = math.acos(cosa) / math.pi * 180
+        beta = math.acos(cosb) / math.pi * 180
+        theta = (alpha + beta) / 2
+
+        return beta, theta
+
+    def getEnergy(self, beta, theta):
+        alpha = 2 * theta - beta
+        lq = math.cos(alpha/180.*math.pi) - math.cos(beta/180.*math.pi)
+        la = lq / (self.lineDensity * 1e3 * self.diffOrder)
+        energy = 2.9979e8 / (la * 1.602176634) * 6.6261e-15
+        return energy
 
 class NotifyThread(threading.Thread):
     def __init__(self):
@@ -166,10 +188,13 @@ class ClientThread(threading.Thread):
         self.client.send(message + IOS)
         self.lock.release()
 
-    def sendLater(self, message, delay):
+    def sendLater(self, message, axes):
         def send():
-            time.sleep(2)
-            self.client.send(message + IOS)
+            while True:
+                time.sleep(1)
+                if all(not axis.moving for axis in axes):
+                    self.client.send(message + IOS)
+                    break
         t = threading.Thread(target=send)
         t.setDaemon(True)
         t.start()
@@ -222,17 +247,19 @@ class ClientThread(threading.Thread):
                 mono.energy = float(param)
                 reply = command + ':y ' + param + IOS
                 f.flush()
-                self.sendLater('ENERGY:' + param, 4)
-                alpha, beta = 2, 4
-                axes[0].move(alpha, 1)
+                self.sendLater('ENERGY:' + param, (axes[0], axes[1]))
+                beta, theta = mono.setEnergy(mono.energy)
+                axes[0].move(theta, 1)
                 axes[1].move(beta, 1)
             elif command == 'SET GRATINGNR':
                 parts = param.split()
                 mono.grating = int(parts[0])
                 reply = command + ':y ' + param + IOS
                 f.flush()
-                axes[3].move(mono.grating_list[mono.grating-1], 1)
-                self.sendLater('GRATINGNR:' + param, 3)
+                pos, density = mono.grating_list[mono.grating-1]
+                axes[3].move(pos, 1)
+                self.sendLater('GRATINGNR:' + param, (axes[3],))
+                mono.lineDensity = density
             elif command == 'GET GRATINGNR':
                 reply = 'GRATINGNR:%d%s' % (mono.grating, IOS)
                 f.flush()
@@ -240,7 +267,7 @@ class ClientThread(threading.Thread):
                 mono.mirror = float(param)
                 reply = command + ':y ' + param + IOS
                 axes[2].move(mono.mirror, 1)
-                self.sendLater('MTPOS:' + param, 3)
+                self.sendLater('MTPOS:' + param, (axes[2],))
             elif command == 'SET STABSTATE':
                 stabState = int(param)
                 reply = ommand + ':y ' + param + IOS
