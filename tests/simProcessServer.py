@@ -173,7 +173,7 @@ class ClientThread(threading.Thread):
             axis.subscribe(self.callback)
         self.lock = threading.Lock()
         self.enable_notify = 0
-        self.notify_interval = 0.5
+        self.notify_interval = 0.1
 
     def notify(self):
         self.lock.acquire()
