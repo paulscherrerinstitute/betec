@@ -285,7 +285,7 @@ asynStatus bestecController::connect(asynUser *pasynUser)
                 return status;
             }
         } else {
-            return asynError;
+            return asynDisconnected;
         }
     }
 
@@ -374,11 +374,13 @@ void bestecController::poller()
     char input[MAX_CONTROLLER_STRING_SIZE] = {0};
     size_t nread;
     int eomReason = 0;
+    epicsTimeStamp start, now;
     asynStatus status = asynSuccess;
     static const char *functionName = "poller";
 
     while (1)
     {
+        epicsTimeGetCurrent(&start);
         lock();
 
         /* Poll messages from the server */
@@ -389,7 +391,7 @@ void bestecController::poller()
                 handleNotification(input, sizeof(input));
         } else if (status == asynTimeout) {
             /* Poll messages from the queue */
-            if (epicsMessageQueueReceiveWithTimeout(notifyQ_, input, sizeof(input), 0) > 0)
+            if (epicsMessageQueueTryReceive(notifyQ_, input, sizeof(input)) > 0)
                 handleNotification(input, sizeof(input));
         } else if (status == asynDisconnected) {
             if (serverIsConnected_) {
@@ -403,11 +405,18 @@ void bestecController::poller()
                     disconnect(pAxis->pasynUser_);
                 }
             }
-            /* Avoid running in a tight loop while disconnected */
-            epicsThreadSleep(0.01);
         }
 
         unlock();
+        epicsTimeGetCurrent(&now);
+
+        /* The server pushes 3 notifications every 100 ms.
+           We limit the polling loop to 2ms, and give other port functions time to run.
+         */
+        double dt = 0.002 - epicsTimeDiffInSeconds(&now, &start);
+        if (dt > 0) {
+            epicsThreadSleep(dt);
+        }
     }
 }
 
