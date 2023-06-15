@@ -5,7 +5,6 @@ import re
 import math
 import socket
 import sys
-import thread
 import threading
 import time
 import traceback
@@ -175,17 +174,20 @@ class ClientThread(threading.Thread):
         self.enable_notify = 0
         self.notify_interval = 0.1
 
+    def send(self, msg):
+        self.client.send(msg.encode('ascii'))
+
     def notify(self):
         self.lock.acquire()
-        self.client.send('AUTO POSE:M %s%s' % (mono.getPose(), IOS))
+        self.send('AUTO POSE:M %s%s' % (mono.getPose(), IOS))
         for axis in axes:
-            self.client.send('AUTO AXISSTATE:%s%s' % (axis.getState(), IOS))
-        self.client.send('AUTO STATE:%s%s' % (mono.getState(), IOS))
+            self.send('AUTO AXISSTATE:%s%s' % (axis.getState(), IOS))
+        self.send('AUTO STATE:%s%s' % (mono.getState(), IOS))
         self.lock.release()
 
     def callback(self, message):
         self.lock.acquire()
-        self.client.send(message + IOS)
+        self.send(message + IOS)
         self.lock.release()
 
     def sendLater(self, message, axes):
@@ -193,7 +195,7 @@ class ClientThread(threading.Thread):
             while True:
                 time.sleep(1)
                 if all(not axis.moving for axis in axes):
-                    self.client.send(message + IOS)
+                    self.send(message + IOS)
                     break
         t = threading.Thread(target=send)
         t.setDaemon(True)
@@ -314,9 +316,8 @@ class ClientThread(threading.Thread):
                 print('Unknow command %s' % command)
                 continue
             self.lock.acquire()
-            print(time.time(),'INP', reply)
-            f.write(reply)
-            f.flush()
+            print(time.time(),'OUT', reply)
+            self.send(reply)
             self.lock.release()
 
         f.close() # close socket
