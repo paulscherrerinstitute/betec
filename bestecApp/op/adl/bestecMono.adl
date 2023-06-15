@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=428
-		y=177
+		x=155
+		y=229
 		width=500
 		height=450
 	}
@@ -430,6 +430,8 @@ rectangle {
 		bclr=6
 	}
 	align="horiz. centered"
+	limits {
+	}
 }
 text {
 	object {
@@ -485,6 +487,8 @@ menu {
 		clr=14
 		bclr=6
 	}
+	limits {
+	}
 }
 text {
 	object {
@@ -527,6 +531,8 @@ text {
 		clr=14
 		bclr=51
 	}
+	limits {
+	}
 }
 text {
 	object {
@@ -556,6 +562,8 @@ text {
 		clr=14
 		bclr=51
 	}
+	limits {
+	}
 }
 "text update" {
 	object {
@@ -570,6 +578,8 @@ text {
 		bclr=6
 	}
 	align="horiz. centered"
+	limits {
+	}
 }
 "text update" {
 	object {
@@ -584,6 +594,8 @@ text {
 		bclr=6
 	}
 	align="horiz. centered"
+	limits {
+	}
 }
 text {
 	object {
@@ -622,6 +634,8 @@ text {
 		bclr=6
 	}
 	align="horiz. centered"
+	limits {
+	}
 }
 "text update" {
 	object {
@@ -636,6 +650,8 @@ text {
 		bclr=6
 	}
 	align="horiz. centered"
+	limits {
+	}
 }
 composite {
 	object {
@@ -864,6 +880,8 @@ rectangle {
 		bclr=6
 	}
 	align="horiz. centered"
+	limits {
+	}
 }
 "text update" {
 	object {
@@ -878,6 +896,8 @@ rectangle {
 		bclr=6
 	}
 	align="horiz. centered"
+	limits {
+	}
 }
 text {
 	object {
@@ -905,6 +925,8 @@ text {
 		bclr=6
 	}
 	align="horiz. centered"
+	limits {
+	}
 }
 "text entry" {
 	object {
@@ -918,21 +940,8 @@ text {
 		clr=14
 		bclr=51
 	}
-}
-"text update" {
-	object {
-		x=300
-		y=72
-		width=100
-		height=20
+	limits {
 	}
-	monitor {
-		chan="$(P)MotionState"
-		clr=44
-		bclr=6
-	}
-	clrmod="alarm"
-	align="horiz. centered"
 }
 "text entry" {
 	object {
@@ -945,6 +954,8 @@ text {
 		chan="$(P)LineDensity"
 		clr=14
 		bclr=51
+	}
+	limits {
 	}
 }
 text {
@@ -973,11 +984,13 @@ text {
 		bclr=6
 	}
 	align="horiz. centered"
+	limits {
+	}
 }
 rectangle {
 	object {
-		x=420
-		y=75
+		x=371
+		y=66
 		width=20
 		height=15
 	}
@@ -992,9 +1005,9 @@ rectangle {
 text {
 	object {
 		x=25
-		y=40
-		width=120
-		height=20
+		y=55
+		width=200
+		height=30
 	}
 	"basic attribute" {
 		clr=20
@@ -1005,4 +1018,36 @@ text {
 	}
 	textix="Disconnected"
 	align="horiz. centered"
+}
+composite {
+	object {
+		x=251
+		y=63
+		width=100
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=251
+				y=63
+				width=100
+				height=20
+			}
+			monitor {
+				chan="$(P)MotionState"
+				clr=44
+				bclr=6
+			}
+			clrmod="alarm"
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)MotionState"
+	}
 }
