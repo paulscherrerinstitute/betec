@@ -34,8 +34,8 @@ record(mbbi, "$(P)MotionState")
     field(SXSV, "MAJOR")
     field(SVST, "Following error")
     field(SVSV, "MAJOR")
-    field(EIST, "EtherCAT error")
-    field(EISV, "MAJOR")
+    field(TEST, "EtherCAT error")
+    field(TESV, "MAJOR")
     field(SCAN, "I/O Intr")
 }
 
