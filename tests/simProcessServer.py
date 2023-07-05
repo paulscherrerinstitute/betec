@@ -181,7 +181,7 @@ class ClientThread(threading.Thread):
         self.lock.acquire()
         self.send('AUTO POSE:M %s%s' % (mono.getPose(), IOS))
         for axis in axes:
-            self.send('AUTO AXISSTATE:%s%s' % (axis.getState(), IOS))
+            self.send('AXISSTATE:%s%s' % (axis.getState(), IOS))
         self.send('AUTO STATE:%s%s' % (mono.getState(), IOS))
         self.lock.release()
 
