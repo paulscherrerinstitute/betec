@@ -59,6 +59,7 @@ public:
 protected:
     int BestecStop;
     int BestecState;
+    int BestecMsg;
     int BestecEnergy;
     int BestecEnergyBusy;
     int BestecGrating;
@@ -95,6 +96,7 @@ bestecController::bestecController(const char *portName, const char *asynPort, i
     /* Create controller specific parameters */
     createParam("BESTEC_STOP", asynParamInt32, &BestecStop);
     createParam("BESTEC_STATE", asynParamInt32, &BestecState);
+    createParam("BESTEC_MSG", asynParamOctet, &BestecMsg);
 
     createParam("BESTEC_Energy", asynParamFloat64, &BestecEnergy);
     createParam("BESTEC_Energy_BUSY", asynParamInt32, &BestecEnergyBusy);
@@ -344,7 +346,7 @@ void bestecController::handleNotification(const char input[], int buflen)
                       functionName, input);
         }
     } else if (epicsStrnCaseCmp(input, "ERROR: ", 7) == 0) {
-        setIntegerParam(BestecMotionError, 9);
+        setStringParam(BestecMsg, input + 7);
     } else if (epicsStrnCaseCmp(input, "CONNECTION ESTABLISHED, ", 24) == 0) {
         /* The greeting message is ignored */
     } else if (sscanf(input, "AXISSTATE:%d", &axisNo) == 1) {
