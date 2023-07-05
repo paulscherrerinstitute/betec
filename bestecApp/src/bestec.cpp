@@ -346,6 +346,10 @@ void bestecController::handleNotification(const char input[], int buflen)
                       "bestecController:%s: Unknown notification`%s`\n",
                       functionName, input);
         }
+    } else if (epicsStrnCaseCmp(input, "ERROR: ", 7) == 0) {
+        setIntegerParam(BestecMotionError, 9);
+    } else if (epicsStrnCaseCmp(input, "CONNECTION ESTABLISHED, ", 24) == 0) {
+        /* The greeting message is ignored */
     } else if (sscanf(input, "AXIS MOTION FINISHED:%d", &axisNo) == 1 ||
         sscanf(input, "AXIS MOTION STOPPED:%d", &axisNo) == 1) {
         getAxis(axisNo-1)->setIntegerParam(motorStatusDone_, 1);
