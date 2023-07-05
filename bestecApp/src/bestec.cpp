@@ -429,19 +429,27 @@ asynStatus bestecController::query(const std::string param, std::string &respons
     char out[MAX_CONTROLLER_STRING_SIZE] = {0};
     char resp[MAX_CONTROLLER_STRING_SIZE] = {0};
     char confirm[MAX_CONTROLLER_STRING_SIZE] = {0};
+    char reject[MAX_CONTROLLER_STRING_SIZE] = {0};
     epicsTimeStamp start, now;
-    int len;
+    int confirm_len, reject_len;
+    size_t pos;
     asynStatus status = asynSuccess;
     const static char *functionName = "query";
 
     /* Query buffer, GET <param> */
     epicsSnprintf(out, sizeof(out), "GET %s", param.c_str());
 
+    /* Pattern of the reject reply */
+    if ((pos = param.find(':')) != std::string::npos)
+        reject_len = epicsSnprintf(reject, sizeof(reject), "GET %s:n", param.substr(0, pos).c_str());
+    else
+        reject_len = epicsSnprintf(reject, sizeof(reject), "GET %s:n", param.c_str());
+
     /* Pattern of the confirmation reply */
     if (param.find(':') != std::string::npos)
-        len = epicsSnprintf(confirm, sizeof(confirm), "%s ", param.c_str());
+        confirm_len = epicsSnprintf(confirm, sizeof(confirm), "%s ", param.c_str());
     else
-        len = epicsSnprintf(confirm, sizeof(confirm), "%s:", param.c_str());
+        confirm_len = epicsSnprintf(confirm, sizeof(confirm), "%s:", param.c_str());
 
     epicsTimeGetCurrent(&start);
 
@@ -456,8 +464,12 @@ asynStatus bestecController::query(const std::string param, std::string &respons
         status = pasynOctetSyncIO->read(pasynUserController_, resp, sizeof(resp), 0, &nread, &eomReason);
 
         if (status == asynSuccess && nread > 0) {
-            if (epicsStrnCaseCmp(resp, confirm, len) == 0) {
-                response = resp + len;
+            if (epicsStrnCaseCmp(resp, confirm, confirm_len) == 0) {
+                response = resp + confirm_len;
+                break;
+            } else if (epicsStrnCaseCmp(resp, reject, reject_len) == 0) {
+                status = asynError;
+                response = resp + reject_len;
                 break;
             } else {
                 epicsMessageQueueSend(notifyQ_, resp, sizeof(resp));
