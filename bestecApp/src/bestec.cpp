@@ -155,7 +155,7 @@ asynStatus bestecController::connectServer()
     /* Get axis scale */
     for (int axis=0; axis<numAxes_; axis++) {
         int scale = 1;
-        epicsSnprintf(param, sizeof(param), "AXISPARAMS:%d", axis);
+        epicsSnprintf(param, sizeof(param), "AXISPARAMS:%d", axis+1);
         if (!query(param, response) &&
             sscanf(response.c_str(), "%*d %*d %d %*s", &scale) == 1) {
             getAxis(axis)->setAxisScale(scale);
