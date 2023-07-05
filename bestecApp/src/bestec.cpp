@@ -43,7 +43,7 @@ public:
     virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual void report(FILE *fp, int level);
     virtual asynStatus connect(asynUser *pasynUser);
-    
+
     virtual bestecAxis *getAxis(int axisNo);
     virtual asynStatus startPoller(double movingPollPeriod, double idlePollPeriod, int forcedFastPolls);
     void poller();
@@ -72,6 +72,8 @@ protected:
     int BestecCFF;
     int BestecLimitEncoderError;
     int BestecMotionError;
+    int BestecMotorAux1;
+    int BestecMotorAux2;
 
     bool serverIsConnected_;
     epicsMutexId socketLock_;
@@ -114,6 +116,8 @@ bestecController::bestecController(const char *portName, const char *asynPort, i
 
     createParam("BESTEC_LIMENC_ERROR", asynParamInt32, &BestecLimitEncoderError);
     createParam("BESTEC_MOTION_ERROR", asynParamInt32, &BestecMotionError);
+    createParam("BESTEC_MOTOR_AUX1", asynParamInt32, &BestecMotorAux1);
+    createParam("BESTEC_MOTOR_AUX2", asynParamInt32, &BestecMotorAux2);
 
     /* Message queues for notification messages */
     notifyQ_ = epicsMessageQueueCreate(100, MAX_CONTROLLER_STRING_SIZE);
@@ -658,6 +662,9 @@ asynStatus bestecAxis::setAxisState(std::string state)
 
         setIntegerParam(pC_->motorStatusLowLimit_, lowLimitSwitch);
         setIntegerParam(pC_->motorStatusHighLimit_, highLimitSwitch);
+
+        setIntegerParam(pC_->BestecMotorAux1, aux1);
+        setIntegerParam(pC_->BestecMotorAux2, aux2);
 
         // update motor status if polling was successful
         setIntegerParam(pC_->motorStatusCommsError_, 0);

@@ -1,0 +1,17 @@
+record(bi, "$(P)$(M)Aux1")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_MOTOR_AUX1")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(P)$(M)Aux2")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_MOTOR_AUX2")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(SCAN, "I/O Intr")
+}
