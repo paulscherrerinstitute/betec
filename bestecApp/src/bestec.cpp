@@ -330,9 +330,6 @@ void bestecController::handleNotification(const char input[], int buflen)
             setDoubleParam(BestecMTPos, mtPos);
             setIntegerParam(BestecState, monoState);
         }
-        else if (sscanf(input, "AUTO AXISSTATE:%d", &axisNo) == 1) {
-            getAxis(axisNo-1)->setAxisState(input + 15);
-        }
         else if (sscanf(input, "AUTO STATE:%d %d %d %d %d",
                         &globalMotion, &globalStabilization, &globalLimitEncoderError,
                         &globalMotionError, &globalMotionErrorDesc) == 5) {
@@ -350,6 +347,8 @@ void bestecController::handleNotification(const char input[], int buflen)
         setIntegerParam(BestecMotionError, 9);
     } else if (epicsStrnCaseCmp(input, "CONNECTION ESTABLISHED, ", 24) == 0) {
         /* The greeting message is ignored */
+    } else if (sscanf(input, "AXISSTATE:%d", &axisNo) == 1) {
+        getAxis(axisNo-1)->setAxisState(input + 10);
     } else if (sscanf(input, "AXIS MOTION FINISHED:%d", &axisNo) == 1 ||
         sscanf(input, "AXIS MOTION STOPPED:%d", &axisNo) == 1) {
         getAxis(axisNo-1)->setIntegerParam(motorStatusDone_, 1);
