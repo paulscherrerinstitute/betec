@@ -339,7 +339,7 @@ void bestecController::handleNotification(const char input[], int buflen)
             setIntegerParam(BestecState, globalMotion);
             setIntegerParam(BestecStabState, globalStabilization);
             setIntegerParam(BestecLimitEncoderError, globalLimitEncoderError);
-            setIntegerParam(BestecMotionError, globalMotionError);
+            setIntegerParam(BestecMotionError, abs(globalMotionError));
         }
         else {
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
