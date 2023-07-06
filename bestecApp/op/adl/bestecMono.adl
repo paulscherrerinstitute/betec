@@ -1,6 +1,6 @@
 
 file {
-	name="/afs/psi.ch/group/8215/wang/epics_driver_modules/bestec/bestecApp/op/adl/bestecMono.adl"
+	name="/afs/psi.ch/group/8215/wang/epics_driver_modules/bestec/psiBuild/../bestecApp/op/adl/bestecMono.adl"
 	version=030115
 }
 display {
@@ -140,7 +140,7 @@ rectangle {
 }
 composite {
 	object {
-		x=160
+		x=173
 		y=374
 		width=35
 		height=16
@@ -149,7 +149,7 @@ composite {
 	children {
 		rectangle {
 			object {
-				x=160
+				x=173
 				y=374
 				width=35
 				height=16
@@ -165,7 +165,7 @@ composite {
 		}
 		rectangle {
 			object {
-				x=160
+				x=173
 				y=374
 				width=35
 				height=16
@@ -185,7 +185,7 @@ composite {
 }
 composite {
 	object {
-		x=160
+		x=173
 		y=419
 		width=35
 		height=16
@@ -194,7 +194,7 @@ composite {
 	children {
 		rectangle {
 			object {
-				x=160
+				x=173
 				y=419
 				width=35
 				height=16
@@ -210,7 +210,7 @@ composite {
 		}
 		rectangle {
 			object {
-				x=160
+				x=173
 				y=419
 				width=35
 				height=16
@@ -241,7 +241,7 @@ text {
 	textix="Diff. order"
 	align="horiz. right"
 }
-menu {
+"text entry" {
 	object {
 		x=183
 		y=265
@@ -252,6 +252,8 @@ menu {
 		chan="$(P)DiffOrder"
 		clr=14
 		bclr=51
+	}
+	limits {
 	}
 }
 "message button" {
@@ -295,7 +297,7 @@ text {
 }
 rectangle {
 	object {
-		x=164
+		x=177
 		y=377
 		width=7
 		height=10
@@ -310,7 +312,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=185
+		x=198
 		y=377
 		width=7
 		height=10
@@ -325,7 +327,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=170
+		x=183
 		y=377
 		width=15
 		height=8
@@ -341,7 +343,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=170
+		x=183
 		y=379
 		width=15
 		height=8
@@ -357,7 +359,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=164
+		x=177
 		y=422
 		width=7
 		height=10
@@ -372,7 +374,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=185
+		x=198
 		y=422
 		width=7
 		height=10
@@ -387,7 +389,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=170
+		x=183
 		y=422
 		width=15
 		height=8
@@ -403,7 +405,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=170
+		x=183
 		y=424
 		width=15
 		height=8
@@ -611,7 +613,7 @@ text {
 }
 text {
 	object {
-		x=220
+		x=233
 		y=344
 		width=100
 		height=15
@@ -623,9 +625,9 @@ text {
 }
 "text update" {
 	object {
-		x=90
+		x=86
 		y=369
-		width=60
+		width=80
 		height=20
 	}
 	monitor {
@@ -639,9 +641,9 @@ text {
 }
 "text update" {
 	object {
-		x=90
+		x=86
 		y=414
-		width=60
+		width=80
 		height=20
 	}
 	monitor {
@@ -655,7 +657,7 @@ text {
 }
 composite {
 	object {
-		x=295
+		x=308
 		y=372
 		width=35
 		height=16
@@ -664,7 +666,7 @@ composite {
 	children {
 		rectangle {
 			object {
-				x=295
+				x=308
 				y=372
 				width=35
 				height=16
@@ -680,7 +682,7 @@ composite {
 		}
 		rectangle {
 			object {
-				x=295
+				x=308
 				y=372
 				width=35
 				height=16
@@ -700,7 +702,7 @@ composite {
 }
 composite {
 	object {
-		x=295
+		x=308
 		y=419
 		width=35
 		height=16
@@ -709,7 +711,7 @@ composite {
 	children {
 		rectangle {
 			object {
-				x=295
+				x=308
 				y=419
 				width=35
 				height=16
@@ -725,7 +727,7 @@ composite {
 		}
 		rectangle {
 			object {
-				x=295
+				x=308
 				y=419
 				width=35
 				height=16
@@ -745,7 +747,7 @@ composite {
 }
 rectangle {
 	object {
-		x=299
+		x=312
 		y=375
 		width=7
 		height=10
@@ -760,7 +762,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=320
+		x=333
 		y=375
 		width=7
 		height=10
@@ -775,7 +777,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=305
+		x=318
 		y=375
 		width=15
 		height=8
@@ -791,7 +793,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=305
+		x=318
 		y=377
 		width=15
 		height=8
@@ -807,7 +809,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=299
+		x=312
 		y=422
 		width=7
 		height=10
@@ -822,7 +824,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=320
+		x=333
 		y=422
 		width=7
 		height=10
@@ -837,7 +839,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=305
+		x=318
 		y=422
 		width=15
 		height=8
@@ -853,7 +855,7 @@ rectangle {
 }
 rectangle {
 	object {
-		x=305
+		x=318
 		y=424
 		width=15
 		height=8
@@ -869,9 +871,9 @@ rectangle {
 }
 "text update" {
 	object {
-		x=225
+		x=221
 		y=369
-		width=60
+		width=80
 		height=20
 	}
 	monitor {
@@ -885,9 +887,9 @@ rectangle {
 }
 "text update" {
 	object {
-		x=225
+		x=221
 		y=414
-		width=60
+		width=80
 		height=20
 	}
 	monitor {
@@ -1050,4 +1052,49 @@ composite {
 		vis="if not zero"
 		chan="$(P)MotionState"
 	}
+}
+composite {
+	object {
+		x=180
+		y=320
+		width=200
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=180
+				y=320
+				width=200
+				height=20
+			}
+			monitor {
+				chan="$(P)MotionState"
+				clr=44
+				bclr=6
+			}
+			clrmod="alarm"
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		chan="$(P)ErrorMessage"
+	}
+}
+text {
+	object {
+		x=18
+		y=320
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Message"
+	align="horiz. right"
 }

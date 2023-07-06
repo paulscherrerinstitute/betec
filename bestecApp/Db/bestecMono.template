@@ -144,29 +144,17 @@ record(ai, "$(P)LineDensity_RBV")
     field(EGU,  "lines/mm")
 }
 
-record(mbbo, "$(P)DiffOrder")
+record(longout, "$(P)DiffOrder")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_DIFFORDER")
-    field(ZRST, "1st")
-    field(ZRVL, "1")
-    field(ONST, "2nd")
-    field(ONVL, "2")
-    field(TWST, "3rd")
-    field(TWVL, "3")
 }
 
-record(mbbi, "$(P)DiffOrder_RBV")
+record(longin, "$(P)DiffOrder_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_DIFFORDER")
     field(SCAN, "I/O Intr")
-    field(ZRST, "1st")
-    field(ZRVL, "1")
-    field(ONST, "2nd")
-    field(ONVL, "2")
-    field(TWST, "3rd")
-    field(TWVL, "3")
 }
 
 record(ao, "$(P)Cff")
