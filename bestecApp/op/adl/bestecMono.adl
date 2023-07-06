@@ -1122,3 +1122,34 @@ menu {
 	limits {
 	}
 }
+composite {
+	object {
+		x=295
+		y=90
+		width=200
+		height=25
+	}
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=295
+				y=90
+				width=200
+				height=25
+			}
+			control {
+				chan="$(P)ClearFollowingError"
+				clr=14
+				bclr=51
+			}
+			label="Clear Following Error"
+			press_msg="1"
+		}
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A=7"
+		chan="$(P)MotionState"
+	}
+}

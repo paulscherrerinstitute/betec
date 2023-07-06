@@ -189,6 +189,14 @@ record(bi, "$(P)StabState_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(bo, "$(P)ClearFollowingError")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_CLEAR_FL_ERROR")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
 record(asyn, "$(P)AsynIO")
 {
     field(PORT, "$(PORT)")

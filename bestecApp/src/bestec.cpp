@@ -73,6 +73,7 @@ protected:
     int BestecCFF;
     int BestecLimitEncoderError;
     int BestecMotionError;
+    int BestecClearFollowingError;
     int BestecMotorAux1;
     int BestecMotorAux2;
 
@@ -117,6 +118,7 @@ bestecController::bestecController(const char *portName, const char *asynPort, i
 
     createParam("BESTEC_LIMENC_ERROR", asynParamInt32, &BestecLimitEncoderError);
     createParam("BESTEC_MOTION_ERROR", asynParamInt32, &BestecMotionError);
+    createParam("BESTEC_CLEAR_FL_ERROR", asynParamInt32, &BestecClearFollowingError);
     createParam("BESTEC_MOTOR_AUX1", asynParamInt32, &BestecMotorAux1);
     createParam("BESTEC_MOTOR_AUX2", asynParamInt32, &BestecMotorAux2);
 
@@ -241,6 +243,8 @@ asynStatus bestecController::writeInt32(asynUser *pasynUser, epicsInt32 value)
         setIntegerParam(reason, value);
         setGratingParameters();
         getGratingParameters();
+    } else if (reason == BestecClearFollowingError) {
+        status = command("CLEAR FOLLOWINGERROR", param, response);
     } else {
         status = asynMotorController::writeInt32(pasynUser, value);
     }
