@@ -56,6 +56,7 @@ public:
     asynStatus setGratingParameters();
     asynStatus getGratingParameters();
 
+    asynStatus setMonoPose(std::string pose);
 protected:
     int BestecStop;
     int BestecState;
@@ -158,14 +159,19 @@ asynStatus bestecController::connectServer()
         goto done;
     }
 
-    /* Get axis scale */
+    /* Get axis parameters and position */
     for (int axis=0; axis<numAxes_; axis++) {
         int scale = 1;
+        bestecAxis *pAxis = getAxis(axis);
         epicsSnprintf(param, sizeof(param), "AXISPARAMS:%d", axis+1);
         if (!query(param, response) &&
             sscanf(response.c_str(), "%*d %*d %d %*s", &scale) == 1) {
-            getAxis(axis)->setAxisScale(scale);
+            pAxis->setAxisScale(scale);
             setDoubleParam(axis, motorRecResolution_, 1.0 / scale);
+        }
+        epicsSnprintf(param, sizeof(param), "AXISSTATE:%d", axis+1);
+        if (!query(param, response)) {
+            getAxis(axis)->setAxisState(response);
         }
     }
 
@@ -177,6 +183,16 @@ asynStatus bestecController::connectServer()
                   functionName);
         goto done;
     }
+
+    /* Get current mono positions */
+    status = query("POSE:M", response);
+    if (status) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                  "bestecController:%s: cannot get mono positions\n",
+                  functionName);
+        goto done;
+    }
+    setMonoPose(response);
 
     /* Enable notification */
     status = command("ENABLE NOTIFY", "1", response);
@@ -323,28 +339,23 @@ asynStatus bestecController::startPoller(double movingPollPeriod, double idlePol
 
 void bestecController::handleNotification(const char input[], int buflen)
 {
-    int axisNo, grating, monoState;
-    double wavelength, energy, mtPos;
+    int axisNo, grating;
+    double energy, mtPos;
     int globalMotion, globalStabilization, globalLimitEncoderError, globalMotionError, globalMotionErrorDesc;
+    int pos;
     static const char *functionName = "handleNotification";
 
     if (epicsStrnCaseCmp(input, "AUTO ", 5) == 0) {
-        if (sscanf(input, "AUTO POSE:M %lf %lf %d %lf %d",
-                   &wavelength, &energy, &grating, &mtPos, &monoState) == 5) {
-            setDoubleParam(BestecEnergy, energy);
-            setIntegerParam(BestecGrating, grating);
-            setDoubleParam(BestecMTPos, mtPos);
-            setIntegerParam(BestecState, monoState);
-        }
-        else if (sscanf(input, "AUTO STATE:%d %d %d %d %d",
+        if (epicsStrnCaseCmp(input, "AUTO POSE:M ", 12) == 0) {
+            setMonoPose(input + 12);
+        } else if (sscanf(input, "AUTO STATE:%d %d %d %d %d",
                         &globalMotion, &globalStabilization, &globalLimitEncoderError,
                         &globalMotionError, &globalMotionErrorDesc) == 5) {
             setIntegerParam(BestecState, globalMotion);
             setIntegerParam(BestecStabState, globalStabilization);
             setIntegerParam(BestecLimitEncoderError, globalLimitEncoderError);
             setIntegerParam(BestecMotionError, abs(globalMotionError));
-        }
-        else {
+        } else {
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                       "bestecController:%s: Unknown notification`%s`\n",
                       functionName, input);
@@ -353,8 +364,8 @@ void bestecController::handleNotification(const char input[], int buflen)
         setStringParam(BestecMsg, input + 7);
     } else if (epicsStrnCaseCmp(input, "CONNECTION ESTABLISHED, ", 24) == 0) {
         /* The greeting message is ignored */
-    } else if (sscanf(input, "AXISSTATE:%d", &axisNo) == 1) {
-        getAxis(axisNo-1)->setAxisState(input + 10);
+    } else if (sscanf(input, "AXISSTATE:%d%n", &axisNo, &pos) == 1) {
+        getAxis(axisNo-1)->setAxisState(input + pos);
     } else if (sscanf(input, "AXIS MOTION FINISHED:%d", &axisNo) == 1 ||
         sscanf(input, "AXIS MOTION STOPPED:%d", &axisNo) == 1) {
         getAxis(axisNo-1)->setIntegerParam(motorStatusDone_, 1);
@@ -612,6 +623,22 @@ asynStatus bestecController::getGratingParameters()
     return status;
 }
 
+asynStatus bestecController::setMonoPose(std::string pose)
+{
+    int grating, monoState;
+    double wavelength, energy, mtPos;
+
+    if (sscanf(pose.c_str(), "%lf %lf %d %lf %d", &wavelength, &energy, &grating, &mtPos, &monoState) == 5) {
+        setDoubleParam(BestecEnergy, energy);
+        setIntegerParam(BestecGrating, grating);
+        setDoubleParam(BestecMTPos, mtPos);
+        setIntegerParam(BestecState, monoState);
+        return asynSuccess;
+    }
+
+    return asynError;
+}
+
 bestecAxis::bestecAxis(bestecController *pC, int axisNum)
     : asynMotorAxis(pC, axisNum), pC_(pC), scale_(1)
 {
@@ -646,14 +673,14 @@ asynStatus bestecAxis::move(double position, int relative, double minVelocity, d
 
 asynStatus bestecAxis::setAxisState(std::string state)
 {
-    int axisNo, axisSteps, moveFlag, lowLimitSwitch, highLimitSwitch, stabilized, aux1, aux2;
+    int axisSteps, moveFlag, lowLimitSwitch, highLimitSwitch, stabilized, aux1, aux2;
     double axisPosition;
     asynStatus status = asynSuccess;
 
-    if (sscanf(state.c_str(), "%d %d %lf %d %d %d %d %d %d",
-               &axisNo, &axisSteps, &axisPosition, &moveFlag,
+    if (sscanf(state.c_str(), "%d %lf %d %d %d %d %d %d",
+               &axisSteps, &axisPosition, &moveFlag,
                &lowLimitSwitch, &highLimitSwitch,
-               &stabilized, &aux1, &aux2) == 9) {
+               &stabilized, &aux1, &aux2) == 8) {
 
         setIntegerParam(pC_->motorStatusDone_, !moveFlag);
 
