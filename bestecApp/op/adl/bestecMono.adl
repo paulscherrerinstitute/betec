@@ -10,7 +10,7 @@ display {
 		width=500
 		height=500
 	}
-	clr=7
+	clr=20
 	bclr=4
 	cmap=""
 	gridSpacing=5
@@ -1062,11 +1062,9 @@ composite {
 	}
 	monitor {
 		chan="$(P)ErrorMessage"
-		clr=44
+		clr=20
 		bclr=6
 	}
-	clrmod="alarm"
-	align="horiz. centered"
 	limits {
 	}
 }

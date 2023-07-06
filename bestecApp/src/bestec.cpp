@@ -485,6 +485,7 @@ asynStatus bestecController::query(const std::string param, std::string &respons
                 break;
             } else if (epicsStrnCaseCmp(resp, reject, reject_len) == 0) {
                 status = asynError;
+                setStringParam(BestecMsg, resp);
                 response = resp + reject_len;
                 break;
             } else {
@@ -578,9 +579,11 @@ asynStatus bestecController::command(const std::string command, const std::strin
     if (epicsStrnCaseCmp(resp, confirm, len) == 0)
     {
         response = resp + len;
+        const char * error = resp + len;
+        setStringParam(BestecMsg, resp);
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                   "bestecController:%s: '%s' rejected: %s\n",
-                  functionName, out, resp + len);
+                  functionName, out, error);
         return asynError;
     }
 
