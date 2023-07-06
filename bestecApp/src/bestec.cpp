@@ -359,6 +359,7 @@ void bestecController::handleNotification(const char input[], int buflen)
             setIntegerParam(BestecStabState, globalStabilization);
             setIntegerParam(BestecLimitEncoderError, globalLimitEncoderError);
             setIntegerParam(BestecMotionError, abs(globalMotionError));
+            setIntegerParam(motorStatusFollowingError_, globalMotionError == -7);
         } else {
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                       "bestecController:%s: Unknown notification`%s`\n",
