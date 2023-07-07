@@ -292,8 +292,9 @@ class ClientThread(threading.Thread):
                 reply = 'AXISSTATE:' + axes[axis-1].getState() + IOS
             elif command == 'GET STATE':
                 reply = 'STATE ' + mono.getState() + IOS
-            elif command == 'GET POSE:M':
-                reply = 'POSE:M ' + mono.getPose() + IOS
+            elif command == 'GET POSE':
+                if param == 'M':
+                    reply = 'POSE:M ' + mono.getPose() + IOS
             elif command == 'SET REQUESTINTERVAL':
                 self.notify_interval = float(param)/1000.
                 reply = command + ':y ' + param + IOS
