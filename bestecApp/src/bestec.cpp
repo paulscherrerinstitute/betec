@@ -169,7 +169,6 @@ asynStatus bestecController::connectServer()
         if (!query(param, response) &&
             sscanf(response.c_str(), "%*d %*d %d %*s", &scale) == 1) {
             pAxis->setAxisScale(scale);
-            setDoubleParam(axis, motorRecResolution_, 1.0 / scale);
         }
         epicsSnprintf(param, sizeof(param), "AXISSTATE:%d", axis+1);
         if (!query(param, response)) {
@@ -655,20 +654,22 @@ bestecAxis::bestecAxis(bestecController *pC, int axisNum)
 asynStatus bestecAxis::move(double position, int relative, double minVelocity, double maxVelocity, double acceleration)
 {
     char command[MAX_CONTROLLER_STRING_SIZE], param[MAX_CONTROLLER_STRING_SIZE];
-    double velocity;
+    double resolution, velocity;
     std::string response;
     asynStatus status;
     static const char *functionName = "move";
 
+    pC_->getDoubleParam (axisNo_, pC_->motorRecResolution_, &resolution);
+
     // Assume velocity is in the range of [0.01, 1.0]. 1.0 means 100% velocity.
-    velocity = epicsMin(1.0, epicsMax(0.01, maxVelocity / scale_));
+    velocity = epicsMin(1.0, epicsMax(0.01, maxVelocity * resolution));
 
     if (relative)
         sprintf(command, "AXIS MOVEUNITSDELTA");
     else
         sprintf(command, "AXIS MOVEUNITSABS");
 
-    epicsSnprintf(param, sizeof(param), "%d %f %f", axisNo_+1, position / scale_, velocity);
+    epicsSnprintf(param, sizeof(param), "%d %f %f", axisNo_+1, position * resolution, velocity);
 
     status = pC_->command(command, param, response);
     if (status == asynError)
@@ -682,7 +683,7 @@ asynStatus bestecAxis::move(double position, int relative, double minVelocity, d
 asynStatus bestecAxis::setAxisState(std::string state)
 {
     int axisSteps, moveFlag, lowLimitSwitch, highLimitSwitch, stabilized, aux1, aux2;
-    double axisPosition;
+    double resolution, axisPosition;
     asynStatus status = asynSuccess;
 
     if (sscanf(state.c_str(), "%d %lf %d %d %d %d %d %d",
@@ -690,10 +691,12 @@ asynStatus bestecAxis::setAxisState(std::string state)
                &lowLimitSwitch, &highLimitSwitch,
                &stabilized, &aux1, &aux2) == 8) {
 
+        pC_->getDoubleParam(axisNo_, pC_->motorRecResolution_, &resolution);
+
         setIntegerParam(pC_->motorStatusDone_, !moveFlag);
 
-        setDoubleParam(pC_->motorEncoderPosition_, axisPosition * scale_);
-        setDoubleParam(pC_->motorPosition_, axisPosition * scale_);
+        setDoubleParam(pC_->motorEncoderPosition_, axisPosition / resolution);
+        setDoubleParam(pC_->motorPosition_, axisPosition / resolution);
 
         setIntegerParam(pC_->motorStatusLowLimit_, lowLimitSwitch);
         setIntegerParam(pC_->motorStatusHighLimit_, highLimitSwitch);
