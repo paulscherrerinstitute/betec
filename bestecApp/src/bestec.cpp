@@ -224,7 +224,7 @@ asynStatus bestecController::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int reason = pasynUser->reason;
     std::string response;
-    char param[MAX_CONTROLLER_STRING_SIZE];
+    char param[MAX_CONTROLLER_STRING_SIZE] = {0};
     asynStatus status = asynSuccess;
 
     if (reason == BestecStop) {
@@ -241,7 +241,7 @@ asynStatus bestecController::writeInt32(asynUser *pasynUser, epicsInt32 value)
             setIntegerParam(reason, atoi(response.c_str()));
     } else if (reason == BestecDiffOrder) {
         setIntegerParam(reason, value);
-        setGratingParameters();
+        status = setGratingParameters();
         getGratingParameters();
     } else if (reason == BestecClearFollowingError) {
         status = command("CLEAR FOLLOWINGERROR", param, response);
@@ -270,7 +270,7 @@ asynStatus bestecController::writeFloat64(asynUser *pasynUser, epicsFloat64 valu
         setIntegerParam(BestecMTPosBusy, 1);
     } else if (reason == BestecLineDensity || reason == BestecCFF) {
         setDoubleParam(reason, value);
-        setGratingParameters();
+        status = setGratingParameters();
         getGratingParameters();
     } else {
         status = asynMotorController::writeFloat64(pasynUser, value);
