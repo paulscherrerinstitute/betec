@@ -4,11 +4,13 @@ record(bo, "$(P)Stop")
     field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_STOP")
 }
 
-record(stringin, "$(P)ErrorMessage")
+record(waveform, "$(P)ErrorMessage")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_MSG")
     field(SCAN, "I/O Intr")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
 }
 
 record(mbbi, "$(P)State")
@@ -148,6 +150,7 @@ record(longout, "$(P)DiffOrder")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_DIFFORDER")
+    field(VAL,  "1")
 }
 
 record(longin, "$(P)DiffOrder_RBV")
