@@ -29,6 +29,7 @@ public:
 protected:
     bestecController *pC_;
     int scale_;
+    bool motionInProgress_;
 
     friend class bestecController;
 };
@@ -649,7 +650,7 @@ asynStatus bestecController::setMonoPose(std::string pose)
 }
 
 bestecAxis::bestecAxis(bestecController *pC, int axisNum)
-    : asynMotorAxis(pC, axisNum), pC_(pC), scale_(1)
+    : asynMotorAxis(pC, axisNum), pC_(pC), scale_(1), motionInProgress_(false)
 {
 }
 
@@ -673,6 +674,9 @@ asynStatus bestecAxis::move(double position, int relative, double minVelocity, d
 
     epicsSnprintf(param, sizeof(param), "%d %f %f", axisNo_+1, position * resolution, velocity);
 
+    // Flag a motion started by this diver
+    motionInProgress_ = true;
+
     status = pC_->command(command, param, response);
     if (status == asynError)
         asynPrint(pC_->pasynUserSelf, ASYN_TRACE_ERROR,
@@ -695,7 +699,14 @@ asynStatus bestecAxis::setAxisState(std::string state)
 
         pC_->getDoubleParam(axisNo_, pC_->motorRecResolution_, &resolution);
 
-        setIntegerParam(pC_->motorStatusDone_, !moveFlag);
+        /* The axis state is from the server's periodic notification. It can happen
+           that driver has started a motion, but an older notification message tells
+           the axis is(actually was) not moving. This can lead to prematurely declare a motion finished.
+
+           So this moveFlag is used for motions not started by this driver.
+           */
+        if (!motionInProgress_)
+            setIntegerParam(pC_->motorStatusDone_, !moveFlag);
 
         setDoubleParam(pC_->motorEncoderPosition_, axisPosition / resolution);
         setDoubleParam(pC_->motorPosition_, axisPosition / resolution);
