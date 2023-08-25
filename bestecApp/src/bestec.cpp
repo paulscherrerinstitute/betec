@@ -370,6 +370,8 @@ void bestecController::handleNotification(const char input[], int buflen)
         /* The greeting message is ignored */
     } else if (sscanf(input, "AXISSTATE:%d%n", &axisNo, &pos) == 1) {
         getAxis(axisNo-1)->setAxisState(input + pos);
+    } else if (sscanf(input, "MOTION FINISHED Axis-%d", &axisNo) == 1) {
+        /* Extra confirmation message that axis has finished movement */
     } else if (sscanf(input, "AXIS MOTION FINISHED:%d", &axisNo) == 1 ||
         sscanf(input, "AXIS MOTION STOPPED:%d", &axisNo) == 1) {
         getAxis(axisNo-1)->setIntegerParam(motorStatusDone_, 1);
