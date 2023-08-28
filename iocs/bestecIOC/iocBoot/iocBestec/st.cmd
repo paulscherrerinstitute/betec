@@ -13,11 +13,11 @@ bestec_registerRecordDeviceDriver pdbbase
 
 
 drvAsynIPPortConfigure("BS_IP", "127.0.0.1:45401")
-bestecCreateController("BS", "BS_IP", 4, 0, 0, 100, 100)
+bestecPGMCreateController("BS", "BS_IP", 4, 0, 0, 100, 100)
 
 
 cd "${TOP}/iocBoot/${IOC}"
 
-dbLoadTemplate("bestec.subs")
+dbLoadTemplate("bestecPGM.subs")
 
 iocInit
