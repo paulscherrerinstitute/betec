@@ -1,89 +1,17 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <string>
+
 #include <epicsAlgorithm.h>
-#include <epicsMessageQueue.h>
 #include <epicsString.h>
 #include <iocsh.h>
 
 #include <asynOctetSyncIO.h>
 
-#include <asynMotorController.h>
-#include <asynMotorAxis.h>
-
 #include <epicsExport.h>
 
-class bestecController;
-
-class epicsShareClass bestecAxis : public asynMotorAxis
-{
-public:
-    bestecAxis(bestecController *pC, int axisNum);
-    virtual asynStatus move(double position, int relative, double minVelocity, double maxVelocity, double acceleration);
-    virtual asynStatus stop(double acceleration);
-    virtual void report(FILE *fp, int level);
-
-    asynStatus setAxisState(std::string state);
-    void setAxisScale(int scale) {scale_ = scale;}
-
-protected:
-    bestecController *pC_;
-    int scale_;
-    bool motionInProgress_;
-
-    friend class bestecController;
-};
-
-class epicsShareClass bestecController : public asynMotorController
-{
-public:
-    bestecController(const char *portName, const char *asynPort, int numAxes,
-                     int priority, int stackSize, double movingPollPeriod, double idlePollPeriod);
-
-    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
-    virtual void report(FILE *fp, int level);
-    virtual asynStatus connect(asynUser *pasynUser);
-
-    virtual bestecAxis *getAxis(int axisNo);
-    virtual asynStatus startPoller(double movingPollPeriod, double idlePollPeriod, int forcedFastPolls);
-    void poller();
-
-    void handleNotification(const char input[], int buflen);
-
-    asynStatus connectServer();
-    asynStatus command(std::string command, std::string parameter, std::string &response);
-    asynStatus query(const std::string query, std::string &response);
-    asynStatus setGratingParameters();
-    asynStatus getGratingParameters();
-
-    asynStatus setMonoPose(std::string pose);
-protected:
-    int BestecStop;
-    int BestecState;
-    int BestecMsg;
-    int BestecEnergy;
-    int BestecEnergyBusy;
-    int BestecGrating;
-    int BestecGratingBusy;
-    int BestecMTPos;
-    int BestecMTPosBusy;
-    int BestecStabState;
-    int BestecLineDensity;
-    int BestecDiffOrder;
-    int BestecCFF;
-    int BestecLimitEncoderError;
-    int BestecMotionError;
-    int BestecClearFollowingError;
-    int BestecMotorAux1;
-    int BestecMotorAux2;
-
-    bool serverIsConnected_;
-    epicsMutexId socketLock_;
-    epicsMessageQueueId notifyQ_;
-
-    friend class bestecAxis;
-};
+#include "bestec.h"
 
 bestecController::bestecController(const char *portName, const char *asynPort, int numAxes,
                                    int priority, int stackSize, double movingPollPeriod, double idlePollPeriod)
@@ -103,19 +31,7 @@ bestecController::bestecController(const char *portName, const char *asynPort, i
     createParam("BESTEC_STATE", asynParamInt32, &BestecState);
     createParam("BESTEC_MSG", asynParamOctet, &BestecMsg);
 
-    createParam("BESTEC_Energy", asynParamFloat64, &BestecEnergy);
-    createParam("BESTEC_Energy_BUSY", asynParamInt32, &BestecEnergyBusy);
-
-    createParam("BESTEC_Grating", asynParamInt32, &BestecGrating);
-    createParam("BESTEC_Grating_BUSY", asynParamInt32, &BestecGratingBusy);
-
-    createParam("BESTEC_MTPos", asynParamFloat64, &BestecMTPos);
-    createParam("BESTEC_MTPos_BUSY", asynParamInt32, &BestecMTPosBusy);
-
     createParam("BESTEC_STABSTATE", asynParamInt32, &BestecStabState);
-    createParam("BESTEC_LINEDENSITY", asynParamFloat64, &BestecLineDensity);
-    createParam("BESTEC_DIFFORDER", asynParamInt32, &BestecDiffOrder);
-    createParam("BESTEC_CFF", asynParamFloat64, &BestecCFF);
 
     createParam("BESTEC_LIMENC_ERROR", asynParamInt32, &BestecLimitEncoderError);
     createParam("BESTEC_MOTION_ERROR", asynParamInt32, &BestecMotionError);
@@ -177,24 +93,16 @@ asynStatus bestecController::connectServer()
         }
     }
 
-    /* Get current grating parameters */
-    status = getGratingParameters();
+    status = query("STABSTATE", response);
     if (status) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "bestecController:%s: cannot get grating parameters\n",
+                  "bestecController:%s: cannot get stabilization state\n",
                   functionName);
         goto done;
     }
+    setIntegerParam(BestecStabState, atoi(response.c_str()));
 
-    /* Get current mono positions */
-    status = query("POSE:M", response);
-    if (status) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "bestecController:%s: cannot get mono positions\n",
-                  functionName);
-        goto done;
-    }
-    setMonoPose(response);
+    status = pollExtra();
 
     /* Enable notification */
     status = command("ENABLE NOTIFY", "1", response);
@@ -229,51 +137,16 @@ asynStatus bestecController::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     if (reason == BestecStop) {
         status = command("SYSTEM STOP", "", response);
-    } else if (reason == BestecGrating) {
-        epicsSnprintf(param, sizeof(param), "%d FreeSwitch", value);
-        status = command("SET GRATINGNR", param, response);
-        setIntegerParam(BestecGratingBusy, 1);
     } else if (reason == BestecStabState)
     {
         epicsSnprintf(param, sizeof(param), "%d", value);
         status = command("SET STABSTATE", param, response);
         if (query("STABSTATE", response) == asynSuccess)
             setIntegerParam(reason, atoi(response.c_str()));
-    } else if (reason == BestecDiffOrder) {
-        setIntegerParam(reason, value);
-        status = setGratingParameters();
-        getGratingParameters();
     } else if (reason == BestecClearFollowingError) {
         status = command("CLEAR FOLLOWINGERROR", param, response);
     } else {
         status = asynMotorController::writeInt32(pasynUser, value);
-    }
-
-    callParamCallbacks();
-    return status;
-}
-
-asynStatus bestecController::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
-{
-    int reason = pasynUser->reason;
-    std::string response;
-    char param[MAX_CONTROLLER_STRING_SIZE];
-    asynStatus status = asynSuccess;
-
-    if (reason == BestecEnergy) {
-        epicsSnprintf(param, sizeof(param), "%f", value);
-        status = command("SET ENERGY", param, response);
-        setIntegerParam(BestecEnergyBusy, 1);
-    } else if (reason == BestecMTPos) {
-        epicsSnprintf(param, sizeof(param), "%f", value);
-        status = command("SET MTPOS", param, response);
-        setIntegerParam(BestecMTPosBusy, 1);
-    } else if (reason == BestecLineDensity || reason == BestecCFF) {
-        setDoubleParam(reason, value);
-        status = setGratingParameters();
-        getGratingParameters();
-    } else {
-        status = asynMotorController::writeFloat64(pasynUser, value);
     }
 
     callParamCallbacks();
@@ -343,16 +216,13 @@ asynStatus bestecController::startPoller(double movingPollPeriod, double idlePol
 
 void bestecController::handleNotification(const char input[], int buflen)
 {
-    int axisNo, grating;
-    double energy, mtPos;
+    int axisNo;
     int globalMotion, globalStabilization, globalLimitEncoderError, globalMotionError, globalMotionErrorDesc;
     int pos;
     static const char *functionName = "handleNotification";
 
     if (epicsStrnCaseCmp(input, "AUTO ", 5) == 0) {
-        if (epicsStrnCaseCmp(input, "AUTO POSE:M ", 12) == 0) {
-            setMonoPose(input + 12);
-        } else if (sscanf(input, "AUTO STATE:%d %d %d %d %d",
+        if (sscanf(input, "AUTO STATE:%d %d %d %d %d",
                         &globalMotion, &globalStabilization, &globalLimitEncoderError,
                         &globalMotionError, &globalMotionErrorDesc) == 5) {
             setIntegerParam(BestecState, globalMotion);
@@ -376,19 +246,6 @@ void bestecController::handleNotification(const char input[], int buflen)
     } else if (sscanf(input, "AXIS MOTION FINISHED:%d", &axisNo) == 1 ||
         sscanf(input, "AXIS MOTION STOPPED:%d", &axisNo) == 1) {
         getAxis(axisNo-1)->setIntegerParam(motorStatusDone_, 1);
-    }
-    else if (sscanf(input, "ENERGY:%lf", &energy) == 1) {
-        setDoubleParam(BestecEnergy, energy);
-        setIntegerParam(BestecEnergyBusy, 0);
-    }
-    else if (sscanf(input, "MTPOS:%lf", &mtPos) == 1) {
-        setDoubleParam(BestecMTPos, mtPos);
-        setIntegerParam(BestecMTPosBusy, 0);
-    }
-    else if (sscanf(input, "GRATINGNR:%d", &grating) == 1) {
-        setIntegerParam(BestecGrating, grating);
-        setIntegerParam(BestecGratingBusy, 0);
-        getGratingParameters();
     } else {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "bestecController:%s: Unknown notification `%s`\n",
@@ -597,55 +454,6 @@ asynStatus bestecController::command(const std::string command, const std::strin
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
         "bestecController:%s: '%s' unexpected reply: %s\n",
         functionName, out, resp);
-    return asynError;
-}
-
-asynStatus bestecController::setGratingParameters()
-{
-    double lineDensity, cff;
-    int diffOrder;
-    char param[MAX_CONTROLLER_STRING_SIZE];
-    std::string response;
-
-    getDoubleParam(BestecLineDensity, &lineDensity);
-    getIntegerParam(BestecDiffOrder, &diffOrder);
-    getDoubleParam(BestecCFF, &cff);
-
-    epicsSnprintf(param, sizeof(param), "%f %d %f", lineDensity, diffOrder, cff);
-    return command("SET GRIDPARAMETERS", param, response);
-}
-
-asynStatus bestecController::getGratingParameters()
-{
-    double lineDensity, cff;
-    int diffOrder;
-    std::string response;
-    asynStatus status;
-
-    status = query("GRIDPARAMETERS", response);
-    if (sscanf(response.c_str(), "%lf %d %lf", &lineDensity, &diffOrder, &cff) == 3)
-    {
-        setDoubleParam(BestecLineDensity, lineDensity);
-        setIntegerParam(BestecDiffOrder, diffOrder);
-        setDoubleParam(BestecCFF, cff);
-    }
-
-    return status;
-}
-
-asynStatus bestecController::setMonoPose(std::string pose)
-{
-    int grating, monoState;
-    double wavelength, energy, mtPos;
-
-    if (sscanf(pose.c_str(), "%lf %lf %d %lf %d", &wavelength, &energy, &grating, &mtPos, &monoState) == 5) {
-        setDoubleParam(BestecEnergy, energy);
-        setIntegerParam(BestecGrating, grating);
-        setDoubleParam(BestecMTPos, mtPos);
-        setIntegerParam(BestecState, monoState);
-        return asynSuccess;
-    }
-
     return asynError;
 }
 

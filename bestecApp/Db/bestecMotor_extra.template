@@ -1,7 +1,7 @@
 record(bi, "$(P)$(M)Aux1")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_MOTOR_AUX1")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT=1)) BESTEC_MOTOR_AUX1")
     field(ZNAM, "Off")
     field(ONAM, "On")
     field(SCAN, "I/O Intr")
@@ -10,7 +10,7 @@ record(bi, "$(P)$(M)Aux1")
 record(bi, "$(P)$(M)Aux2")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_MOTOR_AUX2")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT=1)) BESTEC_MOTOR_AUX2")
     field(ZNAM, "Off")
     field(ONAM, "On")
     field(SCAN, "I/O Intr")
@@ -25,7 +25,7 @@ record(longout,"$(P)$(M)Direction") {
     field(DOL,  "$(P)$(M).DIR CP MS")
     field(OMSL, "closed_loop")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR))MOTOR_REC_DIRECTION")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0))MOTOR_REC_DIRECTION")
 }
 
 # Motor offset for this axis

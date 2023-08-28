@@ -15,6 +15,7 @@ DBD += bestecSupport.dbd
 
 # specify all source files to be compiled and added to the library
 bestec_SRCS += bestec.cpp
+bestec_SRCS += bestecPGM.cpp
 
 bestec_LIBS += asyn motor
 bestec_LIBS += $(EPICS_BASE_IOC_LIBS)
