@@ -86,6 +86,7 @@ asynStatus bestecController::connectServer()
         if (!query(param, response) &&
             sscanf(response.c_str(), "%*d %*d %d %*s", &scale) == 1) {
             pAxis->setAxisScale(scale);
+            pAxis->setDoubleParam(motorRecResolution_, 1.0 / scale);
         }
         epicsSnprintf(param, sizeof(param), "AXISSTATE:%d", axis+1);
         if (!query(param, response)) {
