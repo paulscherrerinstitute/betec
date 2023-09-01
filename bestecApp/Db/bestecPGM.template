@@ -21,6 +21,24 @@ record(ai, "$(P)Energy_RBV")
     field(EGU,  "eV")
 }
 
+record(ai, "$(P)EnergyLow_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_EnergyLow")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+    field(EGU,  "eV")
+}
+
+record(ai, "$(P)EnergyHigh_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1)) BESTEC_EnergyHigh")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+    field(EGU,  "eV")
+}
+
 record(mbbo, "$(P)Grating")
 {
     field(DTYP, "asynInt32")

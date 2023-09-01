@@ -1,3 +1,6 @@
+
+#include <iostream>
+
 #include <epicsString.h>
 
 #include <iocsh.h>
@@ -18,6 +21,8 @@ public:
     virtual asynStatus pollExtra();
     virtual void handleNotification(const char input[], int buflen);
 
+    asynStatus getLimits();
+
     asynStatus setGratingParameters();
     asynStatus getGratingParameters();
 
@@ -26,6 +31,8 @@ public:
 private:
     int BestecEnergy;
     int BestecEnergyBusy;
+    int BestecEnergyLow;
+    int BestecEnergyHigh;
     int BestecGrating;
     int BestecGratingBusy;
     int BestecMTPos;
@@ -42,6 +49,8 @@ bestecPGMController::bestecPGMController(const char *portName, const char *asynP
 {
     createParam("BESTEC_Energy", asynParamFloat64, &BestecEnergy);
     createParam("BESTEC_Energy_BUSY", asynParamInt32, &BestecEnergyBusy);
+    createParam("BESTEC_EnergyLow", asynParamFloat64, &BestecEnergyLow);
+    createParam("BESTEC_EnergyHigh", asynParamFloat64, &BestecEnergyHigh);
 
     createParam("BESTEC_Grating", asynParamInt32, &BestecGrating);
     createParam("BESTEC_Grating_BUSY", asynParamInt32, &BestecGratingBusy);
@@ -54,8 +63,27 @@ bestecPGMController::bestecPGMController(const char *portName, const char *asynP
     createParam("BESTEC_CFF", asynParamFloat64, &BestecCFF);
 
     lock();
+    getLimits();
     pollExtra();
     unlock();
+}
+
+asynStatus bestecPGMController::getLimits()
+{
+    double cffLow, cffHigh, energyLow, energyHigh, wavelengthLow, wavelengthHigh, mtLow, mtHigh;
+    int  gratingLow, gratingHigh;
+
+    std::string response;
+    asynStatus status;
+
+    status = query("LIMITS:M", response);
+    if (sscanf(response.c_str(), "CFF %lf %lf Energy %lf %lf Wavelength %lf %lf GratingNr %d %d MTPos %lf %lf",
+        &cffLow, &cffHigh, &energyLow, &energyHigh, &wavelengthLow, &wavelengthHigh,
+         &gratingLow, &gratingHigh, &mtLow, &mtHigh) == 10) {
+        setDoubleParam(BestecEnergyLow, energyLow);
+        setDoubleParam(BestecEnergyHigh, energyHigh);
+    }
+    return status;
 }
 
 asynStatus bestecPGMController::setGratingParameters()
@@ -209,6 +237,7 @@ void bestecPGMController::handleNotification(const char input[], int buflen)
         setIntegerParam(BestecGrating, grating);
         setIntegerParam(BestecGratingBusy, 0);
         getGratingParameters();
+        getLimits();
     }    
     else {
         bestecController::handleNotification(input, buflen);
