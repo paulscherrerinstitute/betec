@@ -12,7 +12,8 @@ dbLoadDatabase "dbd/bestec.dbd"
 bestec_registerRecordDeviceDriver pdbbase
 
 
-drvAsynIPPortConfigure("BS_IP", "127.0.0.1:45401")
+#drvAsynIPPortConfigure("BS_IP", "127.0.0.1:45401")
+drvAsynIPPortConfigure("BS_IP", "gfa-win-epics:45401", 0, 0)
 bestecPGMCreateController("BS", "BS_IP", 4, 0, 0, 100, 100)
 
 

@@ -6,7 +6,9 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------------------
 # Create and install (or just install) into <top>/db
 # databases, templates, substitutions like this
-DB += bestecMono.template
+DB += bestecController.template
+DB += bestecAxisExtra.template
+DB += bestecPGM.template
 DB += bestecResetBusy.template
 
 #----------------------------------------------------
