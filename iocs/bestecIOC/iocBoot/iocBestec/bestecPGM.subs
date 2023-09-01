@@ -8,12 +8,12 @@ pattern
 }
 
 file "$(BESTEC)/db/bestecAxisExtra.template" {
-    pattern
-    { P       M   PORT ADDR PREC}
-    { 13BS1:  GR  BS   0    6   }
-    { 13BS1:  MR  BS   1    6   }
-    { 13BS1:  GT  BS   2    6   }
-    { 13BS1:  MT  BS   3    6   }
+pattern
+{ P       M   PORT ADDR PREC}
+{ 13BS1:  GR  BS   0    6   }
+{ 13BS1:  MR  BS   1    6   }
+{ 13BS1:  GT  BS   2    6   }
+{ 13BS1:  MT  BS   3    6   }
 }
 
 file "$(BESTEC)/db/bestecPGM.template" {{
