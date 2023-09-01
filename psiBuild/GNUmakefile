@@ -12,4 +12,4 @@ TEMPLATES += ../bestecApp/Db/bestecController.template
 TEMPLATES += ../bestecApp/Db/bestecPGM.template
 TEMPLATES += ../bestecApp/Db/bestecResetBusy.template
 
-QT += ../bestecApp/op/ui/bestecMono.ui
+QT += ../bestecApp/op/ui/autoconvert/bestecPGM.ui

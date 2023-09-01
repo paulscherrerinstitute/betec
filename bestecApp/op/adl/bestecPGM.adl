@@ -1,6 +1,6 @@
 
 file {
-	name="/afs/psi.ch/group/8215/wang/epics_driver_modules/bestec/psiBuild/../bestecApp/op/adl/bestecMono.adl"
+	name="/afs/psi.ch/group/8215/wang/epics_driver_modules/bestec/bestecApp/op/adl/bestecPGM.adl"
 	version=030115
 }
 display {
